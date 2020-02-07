@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Projekt Michał Dałomis</title>
+</head>
+<body>   
+    <button id='komenda'>Wydaj komendę</button>
+    <br><br>
+    <span id='message'></span>
+    <br><br>
+    <input id='chkBox' type="checkbox"> TEST
+    <input id='chkBox2' type="checkbox"> TEST2
+    <script>
+        var message = document.querySelector('#message');
+
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+
+        var grammar = '#JSGF V1.0;'
+
+        var recognition = new SpeechRecognition();
+        var speechRecognitionList = new SpeechGrammarList();
+        speechRecognitionList.addFromString(grammar, 1);
+        recognition.grammars = speechRecognitionList;
+        recognition.lang = 'pl-PL';
+        recognition.interimResults = false;
+
+        recognition.onresult = function(event) {
+            var last = event.results.length - 1;
+            var command = event.results[last][0].transcript;
+            message.textContent = 'Powiedziałeś: ' + command + '.';
+
+            if(command.toLowerCase() === 'zaznacz pole test'){
+                document.querySelector('#chkBox').checked = true;
+            }
+            else if (command.toLowerCase() === 'odznacz pole test'){
+                document.querySelector('#chkBox').checked = false;
+            } 
+            if(command.toLowerCase() === 'zaznacz pole test 2'){
+                document.querySelector('#chkBox2').checked = true;
+            }
+            else if (command.toLowerCase() === 'odznacz pole test 2'){
+                document.querySelector('#chkBox2').checked = false;
+            } 
+        };
+
+        recognition.onspeechend = function() {
+            recognition.stop();
+        };
+
+        recognition.onerror = function(event) {
+            message.textContent = 'Błąd przy rozpoznawaniu: ' + event.error;
+        }        
+
+        document.querySelector('#komenda').addEventListener('click', function(){
+            recognition.start();
+
+        });
+
+
+    </script>
+</body>
+</html>
